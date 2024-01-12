@@ -4,7 +4,10 @@ spring:
     username: felipe
     password: root
   jpa:
-    hibernate: create-drop
+    show-sql: true
+    hibernate:
+      properties:
+        hibernate.format-sql: true
   h2:
     console:
       enabled: true

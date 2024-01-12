@@ -3,7 +3,6 @@ package com.example.credit.application.system.model
 import jakarta.persistence.*
 
 @Entity
-@Table
 data class Customer(
         @Column(nullable = false) var firstName: String = "",
         @Column(nullable = false) var lastName: String = "",
