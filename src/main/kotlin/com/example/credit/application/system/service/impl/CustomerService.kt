@@ -18,7 +18,7 @@ class CustomerService(private val customerRepository: CustomerRepository): ICust
                         throw RuntimeException("Id $customerId not found.")
                     }
 
-    override fun delete(customerId: Long) {
+    override fun deleteById(customerId: Long) {
         this.customerRepository.deleteById(customerId)
     }
 }
