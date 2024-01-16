@@ -5,9 +5,8 @@ spring:
     password: root
   jpa:
     show-sql: true
-    hibernate:
-      properties:
-        hibernate.format-sql: true
+    properties:
+      hibernate.format-sql: true
   h2:
     console:
       enabled: true

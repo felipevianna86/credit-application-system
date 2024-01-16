@@ -4,6 +4,7 @@ import com.example.credit.application.system.dto.CustomerDTO
 import com.example.credit.application.system.dto.CustomerUpdateDTO
 import com.example.credit.application.system.dto.CustomerViewDTO
 import com.example.credit.application.system.service.impl.CustomerService
+import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -15,7 +16,7 @@ class CustomerResource(
 ) {
 
     @PostMapping
-    fun save(@RequestBody customerDTO: CustomerDTO) : ResponseEntity<String> {
+    fun save(@RequestBody @Valid customerDTO: CustomerDTO) : ResponseEntity<String> {
         val customerSaved = this.customerService.save(customerDTO.toEntity())
         return ResponseEntity.status(HttpStatus.CREATED).body("Customer ${customerSaved.email} was saved")
     }
@@ -32,7 +33,7 @@ class CustomerResource(
 
     @PatchMapping
     fun update(@RequestParam(value = "customerId") customerId: Long,
-               customerUpdateDTO: CustomerUpdateDTO): ResponseEntity<CustomerViewDTO> {
+               @Valid customerUpdateDTO: CustomerUpdateDTO): ResponseEntity<CustomerViewDTO> {
         val customerDB = this.customerService.findById(customerId)
         val customerUpdated = this.customerService.save(customerUpdateDTO.toEntity(customerDB))
 
