@@ -39,7 +39,7 @@ class CustomerResourceTest {
     @AfterEach fun tearDown() = customerRepository.deleteAll()
 
     @Test
-    fun `should created a customer and return 201`(){
+    fun `should created a customer and return status 201`(){
         val customerDTO = buildCustomerDTO()
 
         val valueAsString = objectMapper.writeValueAsString(customerDTO)
@@ -55,7 +55,7 @@ class CustomerResourceTest {
     }
 
     @Test
-    fun `should not create a customer with same CPF and return 409`(){
+    fun `should not create a customer with same CPF and return status 409`(){
 
         customerRepository.save(buildCustomerDTO().toEntity())
         val customerDTO = buildCustomerDTO()
@@ -73,7 +73,7 @@ class CustomerResourceTest {
     }
 
     @Test
-    fun `should not create a customer with empty name and return 400`(){
+    fun `should not create a customer with empty name and return status 400`(){
 
         val customerDTO = buildCustomerDTO(firstName = StringUtils.EMPTY)
         val valueAsString = objectMapper.writeValueAsString(customerDTO)
@@ -85,6 +85,30 @@ class CustomerResourceTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.timestamp").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.exception").value("class org.springframework.web.bind.MethodArgumentNotValidException"))
+                .andDo(MockMvcResultHandlers.print())
+    }
+
+    @Test
+    fun `should found a customer by id and return status 200`(){
+
+        val customer = customerRepository.save(buildCustomerDTO().toEntity())
+
+        mockMvc.perform(MockMvcRequestBuilders.get("$URL/${customer.id}")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.cpf").value("18765170857"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("felipe@gmail.com"))
+                .andDo(MockMvcResultHandlers.print())
+    }
+
+    @Test
+    fun `should not found a customer by id and return status 400`(){
+
+       val invalidId = 5
+
+        mockMvc.perform(MockMvcRequestBuilders.get("$URL/$invalidId")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.exception").value("class com.example.credit.application.system.exception.BusinessException"))
                 .andDo(MockMvcResultHandlers.print())
     }
 
