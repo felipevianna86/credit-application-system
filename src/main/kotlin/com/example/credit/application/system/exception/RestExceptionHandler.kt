@@ -43,10 +43,24 @@ class RestExceptionHandler {
                 DetailsException(
                         title = "Conflict! Consult the documentation.",
                         timestamp = LocalDateTime.now(),
-                        status = HttpStatus.BAD_REQUEST.value(),
+                        status = HttpStatus.CONFLICT.value(),
                         exception = ex.javaClass.toString(),
                         details = mutableMapOf(ex.cause.toString() to ex.message)
                 )
             )
+    }
+
+    @ExceptionHandler(BusinessException::class)
+    fun handlerValidException(ex: BusinessException): ResponseEntity<DetailsException>{
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                DetailsException(
+                        title = "Bad Request! Consult the documentation.",
+                        timestamp = LocalDateTime.now(),
+                        status = HttpStatus.BAD_REQUEST.value(),
+                        exception = ex.javaClass.toString(),
+                        details = mutableMapOf(ex.cause.toString() to ex.message)
+                )
+        )
     }
 }

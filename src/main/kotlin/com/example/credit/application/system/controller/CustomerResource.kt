@@ -29,6 +29,7 @@ class CustomerResource(
     }
 
     @DeleteMapping("/{customerId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteById(@PathVariable customerId: Long) = this.customerService.deleteById(customerId)
 
     @PatchMapping
