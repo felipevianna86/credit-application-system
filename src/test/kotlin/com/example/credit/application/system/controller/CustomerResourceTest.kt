@@ -1,6 +1,7 @@
 package com.example.credit.application.system.controller
 
 import com.example.credit.application.system.dto.CustomerDTO
+import com.example.credit.application.system.dto.CustomerUpdateDTO
 import com.example.credit.application.system.repository.CustomerRepository
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.apache.commons.lang3.StringUtils
@@ -136,6 +137,40 @@ class CustomerResourceTest {
                 .andDo(MockMvcResultHandlers.print())
     }
 
+    @Test
+    fun `should update a costumer and return status 200`(){
+        val customer = customerRepository.save(buildCustomerDTO().toEntity())
+        val customerUpdateDTO = buildCustomerUpdateDTO()
+
+        val valueAsString = objectMapper.writeValueAsString(customerUpdateDTO)
+
+        mockMvc.perform(MockMvcRequestBuilders.patch("$URL?customerId=${customer.id}")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(valueAsString))
+                .andExpect(MockMvcResultMatchers.status().isOk)
+                .andExpect(MockMvcResultMatchers.jsonPath("$.firstName").value("Felipe Up"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.cpf").value("18765170857"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("felipe@gmail.com"))
+                .andDo(MockMvcResultHandlers.print())
+    }
+
+    @Test
+    fun `should not update a costumer with invalid id an return 400 status`(){
+        val invalidId = 5
+
+        customerRepository.save(buildCustomerDTO().toEntity())
+        val customerUpdateDTO = buildCustomerUpdateDTO()
+
+        val valueAsString = objectMapper.writeValueAsString(customerUpdateDTO)
+
+        mockMvc.perform(MockMvcRequestBuilders.patch("$URL?customerId=${invalidId}")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(valueAsString))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.exception").value("class com.example.credit.application.system.exception.BusinessException"))
+                .andDo(MockMvcResultHandlers.print())
+    }
+
     private fun buildCustomerDTO(
             firstName: String = "Felipe",
             lastName: String = "Souza",
@@ -153,6 +188,21 @@ class CustomerResourceTest {
             income = income,
             email = email,
             password = password,
+            zipCode = zipCode,
+            street = street
+    )
+
+    private fun buildCustomerUpdateDTO(
+            firstName: String = "Felipe Up",
+            lastName: String = "Souza",
+            income: BigDecimal = BigDecimal.valueOf(500.0),
+            zipCode: String = "59148590",
+            street: String = "Rua dos ocupados"
+    )
+            = CustomerUpdateDTO(
+            firstName = firstName,
+            lastName = lastName,
+            income = income,
             zipCode = zipCode,
             street = street
     )

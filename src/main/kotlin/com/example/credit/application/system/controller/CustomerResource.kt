@@ -34,9 +34,10 @@ class CustomerResource(
 
     @PatchMapping
     fun update(@RequestParam(value = "customerId") customerId: Long,
-               @Valid customerUpdateDTO: CustomerUpdateDTO): ResponseEntity<CustomerViewDTO> {
+               @RequestBody @Valid customerUpdateDTO: CustomerUpdateDTO): ResponseEntity<CustomerViewDTO> {
         val customerDB = this.customerService.findById(customerId)
-        val customerUpdated = this.customerService.save(customerUpdateDTO.toEntity(customerDB))
+        val customer = customerUpdateDTO.toEntity(customerDB)
+        val customerUpdated = this.customerService.save(customer)
 
         return ResponseEntity.ok(CustomerViewDTO(customerUpdated))
     }
