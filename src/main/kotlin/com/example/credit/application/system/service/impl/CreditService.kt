@@ -21,7 +21,7 @@ class CreditService(
     }
 
     override fun findAllByCustomer(customerId: Long): List<Credit> =
-        this.creditRepository.fidnAllByCustomer(customerId)
+        this.creditRepository.findAllByCustomer(customerId)
 
     override fun findByCreditCode(customerId: Long, creditCode: UUID): Credit {
         val creditDB: Credit = this.creditRepository.findByCreditCode(creditCode)
