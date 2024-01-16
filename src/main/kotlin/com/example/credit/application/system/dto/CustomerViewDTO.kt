@@ -10,7 +10,8 @@ data class CustomerViewDTO(
         val income: BigDecimal,
         val email: String,
         val zipCode: String,
-        val street: String
+        val street: String,
+        val id: Long?
 ) {
 
     constructor(customer: Customer): this (
@@ -20,6 +21,7 @@ data class CustomerViewDTO(
             income = customer.income,
             email = customer.email,
             zipCode = customer.address.zipCode,
-            street = customer.address.street
+            street = customer.address.street,
+            id = customer.id
     )
 }
